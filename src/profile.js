@@ -2,6 +2,8 @@ import _ from "lodash";
 import { argv } from "yargs";
 import logger from "testarmada-logger";
 
+import settings from "./settings";
+
 export default {
   getNightwatchConfig: (profile) => {
     logger.prefix = "TestObject Executor";
@@ -24,31 +26,53 @@ export default {
     }
 
     return new Promise((resolve) => {
-      const browsers = [];
+      if (runArgv.to_browser) {
+        const p = {
+          desiredCapabilities: {
+            testobject_api_key: settings.config.accessAPI,
+            testobject_device: runArgv.to_browser
+          },
+          executor: "testobject",
+          nightwatchEnv: "testobject",
+          id: runArgv.to_browser
+        };
 
-      if (runArgv.local_browser) {
-        browsers.push(runArgv.local_browser);
-      } else if (runArgv.local_browsers) {
-        _.forEach(runArgv.local_browsers.split(","), (browser) => {
-          browsers.push(browser);
+        if (settings.config.appID) {
+          p.desiredCapabilities.testobject_app_id = settings.config.appID;
+        }
+
+        logger.debug(`detected profile: ${JSON.stringify(p)}`);
+
+        resolve(p);
+      } else if (runArgv.to_browsers) {
+        const tempBrowsers = runArgv.to_browsers.split(",");
+        const returnBrowsers = [];
+
+        _.forEach(tempBrowsers, (browser) => {
+          const b = browser.trim();
+          const p = {
+            desiredCapabilities: {
+              testobject_api_key: settings.config.accessAPI,
+              testobject_device: b
+            },
+            executor: "browserstack",
+            nightwatchEnv: "browserstack",
+            // id is for magellan reporter
+            id: b
+          };
+
+          if (settings.config.appID) {
+            p.desiredCapabilities.testobject_app_id = settings.config.appID;
+          }
+
+          returnBrowsers.push(p);
         });
-      }
 
-      if (opts.settings.testFramework.profile
-        && opts.settings.testFramework.profile.getProfiles) {
-        // if framework plugin knows how to solve profiles
-        const profiles = opts.settings.testFramework.profile.getProfiles(browsers);
+        logger.debug(`detected profiles: ${JSON.stringify(returnBrowsers)}`);
 
-        _.forEach(profiles, (profile) => {
-          profile.executor = "testobject";
-        });
-
-        logger.debug(`detected profile: ${JSON.stringify(profiles)}`);
-        resolve(profiles);
+        resolve(returnBrowsers);
       } else {
-        // framework doesn't understand how to solve profiles
-        logger.warn("no profile is detected, use the default one");
-        resolve([{ executor: "local", id: "mocha" }]);
+        resolve();
       }
     });
 
@@ -58,25 +82,33 @@ export default {
   getCapabilities: (profile, opts) => {
     logger.prefix = "TestObject Executor";
     return new Promise((resolve, reject) => {
-      if (opts.settings.testFramework.profile
-        && opts.settings.testFramework.profile.getCapabilities) {
-        // if framework plugin knows how to solve capabilities
+      const id = profile.browser;
+      try {
+        const desiredCapabilities = {
+          testobject_api_key: settings.config.accessAPI,
+          testobject_app_id: settings.config.appID,
+          testobject_device: id
+        };
+        // add executor info back to capabilities
 
-
-        try {
-          const p = opts.settings.testFramework.profile.getCapabilities(profile);
-          p.executor = "testobject";
-
-          resolve(p);
-        } catch (e) {
-          logger.err(`profile: ${profile} isn't found`);
-          reject(e);
+        if (profile.resolution) {
+          desiredCapabilities.resolution = profile.resolution;
         }
 
-      } else {
-        // framework doesn't understand how to solve capabilities
-        logger.warn("no capabilities is detected, use the default one");
-        resolve({ executor: "local", id: "mocha" });
+        if (profile.orientation) {
+          desiredCapabilities.deviceOrientation = profile.orientation;
+        }
+        const p = {
+          desiredCapabilities,
+          executor: profile.executor,
+          nightwatchEnv: profile.executor,
+          id
+        };
+
+        resolve(p);
+      } catch (e) {
+        reject(`Executor TestObject cannot resolve profile 
+            ${JSON.stringify(profile)}`);
       }
     });
   },
