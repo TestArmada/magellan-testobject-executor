@@ -21,12 +21,12 @@
     "lodash": "^4.17.4",
     "request": "^2.81.0",
     "testarmada-logger": "^1.1.1",
-    "yargs": "^6.6.0"
+    "yargs": "^8.0.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.0.1",
     "chai-as-promised": "^6.0.0",
-    "codecov": "^1.0.1",
+    "codecov": "^2.2.0",
     "eslint": "^3.12.2",
     "eslint-config-walmart": "^1.1.0",
     "eslint-plugin-filenames": "^1.1.0",
