@@ -22,6 +22,12 @@ export default {
     "example": "asfd89123uohasd89",
     "description": "API key string"
   },
+  "to_username": {
+    "visible": false,
+    "type": "string",
+    "example": "mikebrown",
+    "description": "Your TestObject username"
+  },
   "to_app_id": {
     "visible": true,
     "type": "string",

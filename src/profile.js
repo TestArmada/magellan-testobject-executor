@@ -26,56 +26,62 @@ export default {
       runArgv = argvMock;
     }
 
-    return new Promise((resolve) => {
-      if (runArgv.to_device) {
-        const p = {
-          desiredCapabilities: {
-            testobject_api_key: settings.config.accessAPI,
-            testobject_device: runArgv.to_device
-          },
-          executor: "testobject",
-          nightwatchEnv: "testobject",
-          id: runArgv.to_device
-        };
+    return Muffin
+      .initialize()
+      .then(() => {
+        return new Promise((resolve) => {
+          if (runArgv.to_device) {
+            const p = {
+              desiredCapabilities: {
+                testobject_api_key: settings.config.accessAPI,
+                testobject_device: Muffin.get(runArgv.to_device)
+              },
+              executor: "testobject",
+              nightwatchEnv: "testobject",
+              id: runArgv.to_device
+            };
 
-        if (settings.config.appID) {
-          p.desiredCapabilities.testobject_app_id = settings.config.appID;
-        }
+            if (settings.config.appID) {
+              p.desiredCapabilities.testobject_app_id = settings.config.appID;
+            }
 
-        logger.debug(`detected profile: ${JSON.stringify(p)}`);
+            logger.debug(`detected profile: ${JSON.stringify(p)}`);
 
-        resolve(p);
-      } else if (runArgv.to_devices) {
-        const tempDevices = runArgv.to_devices.split(",");
-        const returnDevices = [];
+            resolve(p);
+          } else if (runArgv.to_devices) {
+            const tempDevices = runArgv.to_devices.split(",");
+            const returnDevices = [];
 
-        _.forEach(tempDevices, (device) => {
-          const b = device.trim();
-          const p = {
-            desiredCapabilities: {
-              testobject_api_key: settings.config.accessAPI,
-              testobject_device: b
-            },
-            executor: "testobject",
-            nightwatchEnv: "testobject",
-            // id is for magellan reporter
-            id: b
-          };
+            _.forEach(tempDevices, (device) => {
+              const b = device.trim();
+              const p = {
+                desiredCapabilities: {
+                  testobject_api_key: settings.config.accessAPI,
+                  testobject_device: Muffin.get(b)
+                },
+                executor: "testobject",
+                nightwatchEnv: "testobject",
+                // id is for magellan reporter
+                id: b
+              };
 
-          if (settings.config.appID) {
-            p.desiredCapabilities.testobject_app_id = settings.config.appID;
+              if (settings.config.appID) {
+                p.desiredCapabilities.testobject_app_id = settings.config.appID;
+              }
+
+              returnDevices.push(p);
+            });
+
+            logger.debug(`detected profiles: ${JSON.stringify(returnDevices)}`);
+
+            resolve(returnDevices);
+          } else {
+            resolve();
           }
-
-          returnDevices.push(p);
         });
+      });
 
-        logger.debug(`detected profiles: ${JSON.stringify(returnDevices)}`);
 
-        resolve(returnDevices);
-      } else {
-        resolve();
-      }
-    });
 
   },
 
@@ -83,36 +89,32 @@ export default {
   getCapabilities: (profile, opts) => {
     logger.prefix = "TestObject Executor";
 
-    return new Promise((resolve, reject) => {
-      const id = profile.browser;
-      try {
-        const desiredCapabilities = {
-          testobject_api_key: settings.config.accessAPI,
-          testobject_app_id: settings.config.appID,
-          testobject_device: id
-        };
-        // add executor info back to capabilities
+    return Muffin
+      .initialize()
+      .then(() => {
+        return new Promise((resolve, reject) => {
 
-        if (profile.resolution) {
-          desiredCapabilities.resolution = profile.resolution;
-        }
+          try {
+            const desiredCapabilities = {
+              testobject_api_key: settings.config.accessAPI,
+              testobject_app_id: settings.config.appID,
+              testobject_device: Muffin.get(profile.browser)
+            };
+            
+            const p = {
+              desiredCapabilities,
+              executor: profile.executor,
+              nightwatchEnv: profile.executor,
+              id
+            };
 
-        if (profile.orientation) {
-          desiredCapabilities.deviceOrientation = profile.orientation;
-        }
-        const p = {
-          desiredCapabilities,
-          executor: profile.executor,
-          nightwatchEnv: profile.executor,
-          id
-        };
-
-        resolve(p);
-      } catch (e) {
-        reject(`Executor TestObject cannot resolve profile 
+            resolve(p);
+          } catch (e) {
+            reject(`Executor TestObject cannot resolve profile 
             ${JSON.stringify(profile)}`);
-      }
-    });
+          }
+        });
+      });
   },
 
   /*eslint-disable global-require*/

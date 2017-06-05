@@ -16,7 +16,7 @@ module.exports = {
   getNightwatchConfig: profile.getNightwatchConfig,
   getProfiles: profile.getProfiles,
   getCapabilities: profile.getCapabilities,
-  listBrowsers: profile.listBrowsers,
+  listDevices: profile.listDevices,
 
   setupRunner: executor.setupRunner,
   teardownRunner: executor.teardownRunner,

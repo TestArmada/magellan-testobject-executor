@@ -1,6 +1,5 @@
 import { argv } from "yargs";
 import _ from "lodash";
-import path from "path";
 import logger from "testarmada-logger";
 import settings from "./settings";
 
@@ -29,10 +28,19 @@ export default {
       settings.config.accessAPI = env.TESTOBJECT_API_KEY;
     }
 
+    if (env.TESTOBJECT_USERNAME) {
+      settings.config.accessUser = env.TESTOBJECT_USERNAME;
+    }
+
     // optional
     if (runArgv.to_api_key && !settings.config.accessAPI) {
       // only accept argument from command line if env variable isn't set
       settings.config.accessAPI = runArgv.to_api_key;
+    }
+
+    if (runArgv.to_username && !settings.config.accessUser) {
+      // only accept argument from command line if env variable isn't set
+      settings.config.accessUser = runArgv.to_username;
     }
 
     if (runArgv.to_app_id) {
@@ -42,7 +50,11 @@ export default {
     const parameterWarnings = {
       accessAPI: {
         required: true,
-        envKey: "TESTOBJECT_ACCESS_API"
+        envKey: "TESTOBJECT_API_KEY"
+      },
+      accessUser: {
+        required: true,
+        envKey: "TESTOBJECT_USERNAME"
       }
     };
 

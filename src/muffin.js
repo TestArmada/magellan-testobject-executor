@@ -5,7 +5,7 @@ import clc from "cli-color";
 import logger from "testarmada-logger";
 import configuration from "./configuration";
 
-const TESTOBJECT_API_URL = "https://app.testobject.com/api/rest/devices/v1/devices/all/available";
+const TESTOBJECT_API_URL = "https://app.testobject.com/api/rest/v1/devices/all";
 let deviceCache = {};
 
 
@@ -25,14 +25,14 @@ export default {
           reject(e);
         }
         const options = {
-          "headers": {
-            "Accept": "application/json",
-            "x-api-key": config.accessAPI
+          "auth": {
+            "user": config.accessUser,
+            "pass": config.accessAPI,
+            "sendImmediately": false
           }
         };
 
         request.get(TESTOBJECT_API_URL, options, (err, response, body) => {
-          console.log("======>", err, body)
           if (err) {
             reject(err);
           }
@@ -46,7 +46,12 @@ export default {
 
   get(id) {
     if (_.keys(deviceCache).length > 0) {
-      return deviceCache[id];
+      // !!!!!!!!!NOTICE!!!!!!!!!
+      // this is only a workaround, right now there is an issue in TestObject API,
+      // private devices won't be returnd. once the issue is fixed we need to 
+      // return the correct value
+      // return deviceCache[id];
+      return id
     }
 
     return null;
@@ -58,9 +63,9 @@ export default {
     if (_.keys(deviceCache).length > 0) {
       logger.loghelp("Available TestObject Device:");
 
-      const families = _.groupBy(deviceCache, (capabilities) => capabilities.browser);
+      const families = _.groupBy(deviceCache, (details) => details.os);
       const table = new Table({
-        head: ["Family", "Alias", "Browser/Env", "Version", "OS", "OS Version", "Device"]
+        head: ["Family", "ID", "Manufacturer", "OS", "OS Version", "API Level", "Screen Size"]
       });
 
       let count = 1;
@@ -68,17 +73,17 @@ export default {
       Object.keys(families).sort().forEach((family) => {
         table.push([clc.red(_.capitalize(family))]);
         const currentFamily = families[family];
+        const sortedCurrentFamily = _.sortBy(currentFamily, ["id"]);
 
-        _.forEach(currentFamily, (capabilities) => {
-          const key = self._generateKey(capabilities);
+        _.forEach(sortedCurrentFamily, (details) => {
           table.push([
             clc.blackBright(`${count}.`),
-            key,
-            _.capitalize(capabilities.browser),
-            capabilities.browser_version ? capabilities.browser_version : "N/A",
-            _.capitalize(capabilities.os),
-            capabilities.os_version,
-            capabilities.device ? capabilities.device : "N/A"
+            details.id,
+            _.upperCase(details.manufacturer),
+            _.upperCase(details.os),
+            details.osVersion ? details.osVersion : "N/A",
+            details.apiLevel? details.osVersion : "N/A",
+            details.screenSize
           ]);
           count++;
         });
@@ -90,33 +95,12 @@ export default {
     return null;
   },
 
-  _generateKey(capabilities) {
-    const values = [];
-
-    values.push(capabilities.browser);
-
-    if (capabilities.browser_version) {
-      values.push(capabilities.browser_version);
-    }
-
-    values.push(capabilities.os);
-    values.push(capabilities.os_version);
-
-    if (capabilities.device) {
-      values.push(capabilities.device);
-    }
-
-    const key = values.join("_").replace(/(\.|\s)/g, "_");
-    return key;
-  },
-
   _buildDeviceCache(testobjectResponse) {
     const self = this;
     deviceCache = {};
 
-    _.forEach(testobjectResponse, (capabilities) => {
-      const key = self._generateKey(capabilities);
-      deviceCache[key] = capabilities;
+    _.forEach(testobjectResponse, (details) => {
+      deviceCache[details.id] = details;
     });
 
   }
