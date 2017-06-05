@@ -25,11 +25,16 @@ export default {
     }
 
     // required
-    if (env.TESTOBJECT_ACCESS_API) {
-      settings.config.accessAPI = env.TESTOBJECT_ACCESS_API;
+    if (env.TESTOBJECT_API_KEY) {
+      settings.config.accessAPI = env.TESTOBJECT_API_KEY;
     }
 
     // optional
+    if (runArgv.to_api_key && !settings.config.accessAPI) {
+      // only accept argument from command line if env variable isn't set
+      settings.config.accessAPI = runArgv.to_api_key;
+    }
+
     if (runArgv.to_app_id) {
       settings.config.appID = runArgv.to_app_id;
     }
