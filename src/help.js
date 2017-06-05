@@ -1,20 +1,20 @@
 export default {
-  "to_browser": {
+  "to_device": {
     "visible": true,
     "type": "string",
-    "example": "browsername",
-    "description": "String represents one browser which TestObject supports"
+    "example": "devicename",
+    "description": "String represents one device which TestObject supports"
   },
-  "to_browsers": {
+  "to_devices": {
     "visible": true,
     "type": "string",
-    "example": "b1,b2,..",
-    "description": "String represents multiple browsers which TestObject supports"
+    "example": "d1,d2,..",
+    "description": "String represents multiple devices which TestObject supports"
   },
-  "to_list_browsers": {
+  "to_list_devices": {
     "visible": true,
     "type": "function",
-    "description": "List the available browsers TestObject supports."
+    "description": "List the available devices TestObject supports."
   },
   "to_api_key": {
     "visible": false,

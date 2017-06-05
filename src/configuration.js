@@ -41,8 +41,9 @@ export default {
       }
     };
 
-    if (runArgv.to_browsers
-      || runArgv.to_browser
+    if (runArgv.to_devices
+      || runArgv.to_device
+      || runArgv.to_list_devices
       || opts.isEnabled) {
       let valid = true;
 

@@ -3,6 +3,7 @@ import { argv } from "yargs";
 import logger from "testarmada-logger";
 
 import settings from "./settings";
+import Muffin from "./muffin";
 
 export default {
   getNightwatchConfig: (profile) => {
@@ -26,15 +27,15 @@ export default {
     }
 
     return new Promise((resolve) => {
-      if (runArgv.to_browser) {
+      if (runArgv.to_device) {
         const p = {
           desiredCapabilities: {
             testobject_api_key: settings.config.accessAPI,
-            testobject_device: runArgv.to_browser
+            testobject_device: runArgv.to_device
           },
           executor: "testobject",
           nightwatchEnv: "testobject",
-          id: runArgv.to_browser
+          id: runArgv.to_device
         };
 
         if (settings.config.appID) {
@@ -44,19 +45,19 @@ export default {
         logger.debug(`detected profile: ${JSON.stringify(p)}`);
 
         resolve(p);
-      } else if (runArgv.to_browsers) {
-        const tempBrowsers = runArgv.to_browsers.split(",");
-        const returnBrowsers = [];
+      } else if (runArgv.to_devices) {
+        const tempDevices = runArgv.to_devices.split(",");
+        const returnDevices = [];
 
-        _.forEach(tempBrowsers, (browser) => {
-          const b = browser.trim();
+        _.forEach(tempDevices, (device) => {
+          const b = device.trim();
           const p = {
             desiredCapabilities: {
               testobject_api_key: settings.config.accessAPI,
               testobject_device: b
             },
-            executor: "browserstack",
-            nightwatchEnv: "browserstack",
+            executor: "testobject",
+            nightwatchEnv: "testobject",
             // id is for magellan reporter
             id: b
           };
@@ -65,12 +66,12 @@ export default {
             p.desiredCapabilities.testobject_app_id = settings.config.appID;
           }
 
-          returnBrowsers.push(p);
+          returnDevices.push(p);
         });
 
-        logger.debug(`detected profiles: ${JSON.stringify(returnBrowsers)}`);
+        logger.debug(`detected profiles: ${JSON.stringify(returnDevices)}`);
 
-        resolve(returnBrowsers);
+        resolve(returnDevices);
       } else {
         resolve();
       }
@@ -81,6 +82,7 @@ export default {
   /*eslint-disable global-require*/
   getCapabilities: (profile, opts) => {
     logger.prefix = "TestObject Executor";
+
     return new Promise((resolve, reject) => {
       const id = profile.browser;
       try {
@@ -114,20 +116,20 @@ export default {
   },
 
   /*eslint-disable global-require*/
-  listBrowsers: (opts, callback) => {
+  listDevices: (opts, callback) => {
     logger.prefix = "TestObject Executor";
 
-    if (opts.settings.testFramework.profile
-      && opts.settings.testFramework.profile.listBrowsers) {
-      // if framework plugin knows how to list browsers
-
-      const listedBrowsers = opts.settings.testFramework.profile.listBrowsers();
-      logger.log(`Available browsers: ${listedBrowsers.join(",")}`);
-
-      return callback();
-    } else {
-      // if framework plugin doesn't know how to list browsers
-      return callback();
-    }
+    Muffin
+      .initialize()
+      .then((devices) => {
+        const table = Muffin.cliList();
+        logger.loghelp(table.toString());
+        callback(null, devices);
+      })
+      .catch((err) => {
+        logger.err(`Couldn't fetch TestObject devices. Error: ${err}`);
+        logger.err(err.stack);
+        callback(err);
+      });
   }
 };
