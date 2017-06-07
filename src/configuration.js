@@ -5,6 +5,9 @@ import settings from "./settings";
 
 export default {
   getConfig: () => {
+    logger.prefix = "TestObject Executor";
+    logger.debug(`executor config: ${JSON.stringify(settings.config)}`);
+
     return settings.config;
   },
 
@@ -24,13 +27,8 @@ export default {
     }
 
     // required
-    if (env.TESTOBJECT_API_KEY) {
-      settings.config.accessAPI = env.TESTOBJECT_API_KEY;
-    }
-
-    if (env.TESTOBJECT_USERNAME) {
-      settings.config.accessUser = env.TESTOBJECT_USERNAME;
-    }
+    settings.config.accessAPI = env.TESTOBJECT_API_KEY;
+    settings.config.accessUser = env.TESTOBJECT_USERNAME;
 
     // optional
     if (runArgv.to_api_key && !settings.config.accessAPI) {
@@ -43,9 +41,7 @@ export default {
       settings.config.accessUser = runArgv.to_username;
     }
 
-    if (runArgv.to_app_id) {
-      settings.config.appID = runArgv.to_app_id;
-    }
+    settings.config.appID = runArgv.to_app_id;
 
     const parameterWarnings = {
       accessAPI: {
@@ -86,9 +82,8 @@ export default {
       logger.debug(JSON.stringify(settings.config));
 
       logger.log("TestObject configuration OK");
-
-      return settings.config;
     }
 
+    return settings.config;
   }
 };

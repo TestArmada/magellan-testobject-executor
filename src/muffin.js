@@ -48,18 +48,16 @@ export default {
     if (_.keys(deviceCache).length > 0) {
       // !!!!!!!!!NOTICE!!!!!!!!!
       // this is only a workaround, right now there is an issue in TestObject API,
-      // private devices won't be returnd. once the issue is fixed we need to 
+      // private devices won't be returnd. once the issue is fixed we need to
       // return the correct value
       // return deviceCache[id];
-      return id
+      return id;
     }
 
     return null;
   },
 
   cliList() {
-    const self = this;
-
     if (_.keys(deviceCache).length > 0) {
       logger.loghelp("Available TestObject Device:");
 
@@ -82,7 +80,7 @@ export default {
             _.upperCase(details.manufacturer),
             _.upperCase(details.os),
             details.osVersion ? details.osVersion : "N/A",
-            details.apiLevel? details.osVersion : "N/A",
+            details.apiLevel ? details.osVersion : "N/A",
             details.screenSize
           ]);
           count++;
@@ -96,7 +94,6 @@ export default {
   },
 
   _buildDeviceCache(testobjectResponse) {
-    const self = this;
     deviceCache = {};
 
     _.forEach(testobjectResponse, (details) => {

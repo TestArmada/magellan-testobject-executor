@@ -5,6 +5,8 @@ import logger from "testarmada-logger";
 import settings from "./settings";
 import Muffin from "./muffin";
 
+
+/* eslint-disable camelcase */
 export default {
   getNightwatchConfig: (profile) => {
     logger.prefix = "TestObject Executor";
@@ -82,10 +84,9 @@ export default {
       });
 
 
-
   },
 
-  /*eslint-disable global-require*/
+  /*eslint-disable global-require,no-unused-vars*/
   getCapabilities: (profile, opts) => {
     logger.prefix = "TestObject Executor";
 
@@ -100,12 +101,12 @@ export default {
               testobject_app_id: settings.config.appID,
               testobject_device: Muffin.get(profile.browser)
             };
-            
+
             const p = {
               desiredCapabilities,
               executor: profile.executor,
               nightwatchEnv: profile.executor,
-              id
+              id: profile.browser
             };
 
             resolve(p);
