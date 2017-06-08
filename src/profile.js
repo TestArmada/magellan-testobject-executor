@@ -29,7 +29,7 @@ export default {
     }
 
     return Muffin
-      .initialize()
+      .initialize(false, argvMock)
       .then(() => {
         return new Promise((resolve) => {
           if (runArgv.to_device) {
@@ -98,9 +98,12 @@ export default {
           try {
             const desiredCapabilities = {
               testobject_api_key: settings.config.accessAPI,
-              testobject_app_id: settings.config.appID,
               testobject_device: Muffin.get(profile.browser)
             };
+
+            if (settings.config.appID) {
+              desiredCapabilities.testobject_app_id = settings.config.appID;
+            }
 
             const p = {
               desiredCapabilities,
