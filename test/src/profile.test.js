@@ -20,6 +20,8 @@ describe("Profile", function () {
         to_app_id: "1"
       };
 
+      configuration.validateConfig({ isEnabled: true }, argvMock);
+
       return profile
         .getProfiles({}, argvMock)
         .then((profile) => {
@@ -36,6 +38,8 @@ describe("Profile", function () {
       let argvMock = {
         to_devices: "Samsung_Galaxy_S7_real, Asus_Google_Nexus_7_real"
       };
+
+      configuration.validateConfig({ isEnabled: true }, argvMock);
 
       return profile
         .getProfiles({}, argvMock)

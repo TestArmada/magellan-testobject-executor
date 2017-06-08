@@ -20,7 +20,7 @@ export default {
         resolve(deviceCache);
       } else {
         try {
-          config = configuration.validateConfig({}, argvMock, envMock);
+          config = configuration.validateConfig({ isEnabled: true }, argvMock, envMock);
         } catch (e) {
           reject(e);
         }
