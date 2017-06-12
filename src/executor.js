@@ -37,6 +37,7 @@ export default {
     return ifork(testRun.getCommand(), testRun.getArguments(), options);
   },
 
+  /* eslint-disable consistent-return */
   summerizeTest: (magellanBuildId, testResult, callback) => {
     logger.prefix = "TestObject Executor";
 
