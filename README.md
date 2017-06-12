@@ -27,7 +27,7 @@ Please follow the steps
  export TESTOBJECT_ACCESS_API=${ACCESS_KEY}
  ```
 
- 4. `./node_modules/.bin/magellan ----help` to see if you can see the following content printed out
+ 4. `./node_modules/.bin/magellan --help` to see if you can see the following content printed out
  ```
   Executor-specific (testarmada-magellan-testobject-executor)
    --to_device=devicename               String represents one device which TestObject supports
