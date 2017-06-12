@@ -2,8 +2,6 @@ import { fork } from "child_process";
 import request from "request";
 import logger from "testarmada-logger";
 
-import settings from "./settings";
-
 export default {
   /*eslint-disable no-unused-vars*/
   setupRunner: (mocks = null) => {
@@ -40,48 +38,45 @@ export default {
   summerizeTest: (magellanBuildId, testResult, callback) => {
     logger.prefix = "TestObject Executor";
 
-    const additionalLog = "";
+    let additionalLog = "";
 
     if (!testResult.metadata) {
       // testarmada-nightwatch-extra isn't in use, users need
       // to report result to saucelabs by themselves
-      logger.warn("No meta data is found, executor will not report result to saucelabs");
+      logger.warn("No meta data is found, executor will not report result to TestObject."
+        + " This is mainly caused by not using https://github.com/TestArmada/nightwatch-extra");
       return callback();
     }
     try {
       const sessionId = testResult.metadata.sessionId;
 
-      const uri = `https://app.testobject.com/api/rest/v1/appium/session/${sessionId}/test`;
-      const body = JSON.stringify({
-        "passed": testResult.result
-      });
+      logger.debug(`TestObject replay can be found `
+        + `at ${testResult.metadata.capabilities.testobject_test_report_url}\n`);
 
-      const auth = {
-        user: settings.config.accessUser,
-        password: settings.config.accessAPI
+      if (!testResult.result) {
+        // print out sauce replay to console if test failed
+        additionalLog = logger.warn(`TestObject replay can be found `
+          + `at ${testResult.metadata.capabilities.testobject_test_report_url}\n`);
+      }
+
+      const options = {
+        method: "PUT",
+        url: `https://app.testobject.com/api/rest/v1/appium/session/${sessionId}/test`,
+        body: JSON.stringify({ "passed": testResult.result }),
+        headers: {
+          "Content-Type": "application/json"
+        }
       };
 
-      logger.debug("Data posting to TestObject job:");
-      logger.debug(JSON.stringify(body));
-      logger.debug(`Updating TestObject ${uri}`);
+      logger.debug(`Request: ${JSON.stringify(options)}`);
 
-      // request.debug = true;
-      return request({
-        uri,
-        auth,
-        body,
-        strictSSL: false,
-        json: true,
-        method: "PUT"
-      }, (err, response, b) => {
+      return request(options, (err, response, b) => {
         if (err) {
           logger.err(`problem with request: ${err}`);
           return callback();
         }
 
-        logger.debug(`Response: ${response.statusCode}`);
-        logger.debug(`Header  : ${JSON.stringify(response.headers)}`);
-        logger.debug(`Body  : ${JSON.stringify(b)}`);
+        logger.debug(`Response: ${JSON.stringify(response)}`);
 
         return callback(additionalLog);
       });
