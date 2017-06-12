@@ -41,4 +41,4 @@ Congratulations, you're all set.
 
 # NOTICE
 
-There is an issue in TestObject test result report API. If test result is reported right after the `driver.end()` has been called, there is a chance that your result won't be saved. We added a delay the invoke of result report API. By default the delay is 20 seconds but you can change it by setting this environment variable `TESTOBJECT_API_DELAY` in milliseconds.
+There is an issue in TestObject test result report API. If test result is reported right after the `driver.end()` has been called, there is a chance that your result won't be saved. Therefore we have added a delay before result report API is invoked. By default the delay is 20 seconds but you can change it by setting this environment variable `TESTOBJECT_API_DELAY` in milliseconds.
