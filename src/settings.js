@@ -10,5 +10,6 @@ const config = {
 
 export default {
   debug,
+  TESTOBJECT_API_DELAY: process.env.TESTOBJECT_API_DELAY || 20000,
   config
 };

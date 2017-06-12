@@ -2,6 +2,8 @@ import { fork } from "child_process";
 import request from "request";
 import logger from "testarmada-logger";
 
+import settings from "./settings";
+
 export default {
   /*eslint-disable no-unused-vars*/
   setupRunner: (mocks = null) => {
@@ -47,44 +49,46 @@ export default {
         + " This is mainly caused by not using https://github.com/TestArmada/nightwatch-extra");
       return callback();
     }
-    try {
-      const sessionId = testResult.metadata.sessionId;
+    setTimeout(() => {
+      try {
+        const sessionId = testResult.metadata.sessionId;
 
-      logger.debug(`TestObject replay can be found `
-        + `at ${testResult.metadata.capabilities.testobject_test_report_url}\n`);
-
-      if (!testResult.result) {
-        // print out sauce replay to console if test failed
-        additionalLog = logger.warn(`TestObject replay can be found `
+        logger.debug(`TestObject replay can be found `
           + `at ${testResult.metadata.capabilities.testobject_test_report_url}\n`);
+
+        if (!testResult.result) {
+          // print out sauce replay to console if test failed
+          additionalLog = logger.warn(`TestObject replay can be found `
+            + `at ${testResult.metadata.capabilities.testobject_test_report_url}\n`);
+        }
+
+        const options = {
+          method: "PUT",
+          url: `https://app.testobject.com/api/rest/v1/appium/session/${sessionId}/test`,
+          body: JSON.stringify({ "passed": testResult.result }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        };
+
+        logger.debug(`Request: ${JSON.stringify(options)}`);
+
+        return request(options, (err, response, b) => {
+          if (err) {
+            logger.err(`problem with request: ${err}`);
+            return callback();
+          }
+
+          logger.debug(`Response: ${JSON.stringify(response)}`);
+
+          return callback(additionalLog);
+        });
+
+      } catch (err) {
+        logger.err(`Error ${err}`);
+        return callback();
       }
-
-      const options = {
-        method: "PUT",
-        url: `https://app.testobject.com/api/rest/v1/appium/session/${sessionId}/test`,
-        body: JSON.stringify({ "passed": testResult.result }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      };
-
-      logger.debug(`Request: ${JSON.stringify(options)}`);
-
-      return request(options, (err, response, b) => {
-        if (err) {
-          logger.err(`problem with request: ${err}`);
-          return callback();
-        }
-
-        logger.debug(`Response: ${JSON.stringify(response)}`);
-
-        return callback(additionalLog);
-      });
-
-    } catch (err) {
-      logger.err(`Error ${err}`);
-      return callback();
-    }
+    }, settings.TESTOBJECT_API_DELAY);
   }
 
 };
