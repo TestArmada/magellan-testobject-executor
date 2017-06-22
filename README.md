@@ -25,7 +25,7 @@ Please follow the steps
  3. set env variables
  ```
  export TESTOBJECT_USERNAME=${USERNAME}
- export TESTOBJECT_ACCESS_API=${ACCESS_KEY}
+ export TESTOBJECT_API_KEY=${ACCESS_KEY}
  ```
 
  4. `./node_modules/.bin/magellan --help` to see if you can see the following content printed out
