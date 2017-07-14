@@ -33,5 +33,17 @@ export default {
     "type": "string",
     "example": "1",
     "description": "APP id of the uploaded app to TestObject"
+  },
+  "to_platform_name": {
+    "visible": true,
+    "type": "string",
+    "example": "iOS",
+    "description": "String represents the mobile platform"
+  },
+  "to_platform_version": {
+    "visible": true,
+    "type": "string",
+    "example": "10.2",
+    "description": "String represents the mobile platform version"
   }
 };

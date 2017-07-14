@@ -11,7 +11,7 @@ export default {
     return settings.config;
   },
 
-  /*eslint-disable no-unused-vars*/
+  /*eslint-disable no-unused-vars,complexity*/
   validateConfig: (opts, argvMock = null, envMock = null) => {
     logger.prefix = "TestObject Executor";
 
@@ -56,6 +56,8 @@ export default {
 
     if (runArgv.to_devices
       || runArgv.to_device
+      || runArgv.to_platform_name
+      || runArgv.to_platform_version
       || runArgv.to_list_devices
       || opts.isEnabled) {
       let valid = true;
@@ -76,6 +78,18 @@ export default {
 
       if (!valid) {
         throw new Error("Missing configuration for TestObject connection.");
+      }
+
+      // no coexistence of to_devices and to_device
+      if (runArgv.to_devices && runArgv.to_device) {
+        throw new Error("--to_devices and --to_device cannot co-exist in the arguments");
+      }
+
+      // no coexistence of to_devices and to_device
+      if (runArgv.to_devices &&
+        (runArgv.to_platform_name || runArgv.to_platform_version)) {
+        throw new Error("--to_devices and --to_platform_name or --to_platform_name "
+          + "cannot co-exist in the arguments");
       }
 
       logger.debug("TestObject configuration: ");
