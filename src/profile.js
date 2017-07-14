@@ -36,7 +36,7 @@ export default {
             const p = {
               desiredCapabilities: {
                 testobject_api_key: settings.config.accessAPI,
-                testobject_device: Muffin.get(runArgv.to_device)
+                deviceName: Muffin.get(runArgv.to_device)
               },
               executor: "testobject",
               nightwatchEnv: "testobject",
@@ -45,6 +45,14 @@ export default {
 
             if (settings.config.appID) {
               p.desiredCapabilities.testobject_app_id = settings.config.appID;
+            }
+
+            if (runArgv.to_platform_name) {
+              p.desiredCapabilities.platformName = runArgv.to_platform_name;
+            }
+
+            if (runArgv.to_platform_version) {
+              p.desiredCapabilities.platformVersion = runArgv.to_platform_version;
             }
 
             logger.debug(`detected profile: ${JSON.stringify(p)}`);
@@ -59,7 +67,7 @@ export default {
               const p = {
                 desiredCapabilities: {
                   testobject_api_key: settings.config.accessAPI,
-                  testobject_device: Muffin.get(b)
+                  deviceName: Muffin.get(b)
                 },
                 executor: "testobject",
                 nightwatchEnv: "testobject",
@@ -94,15 +102,22 @@ export default {
       .initialize()
       .then(() => {
         return new Promise((resolve, reject) => {
-
           try {
             const desiredCapabilities = {
               testobject_api_key: settings.config.accessAPI,
-              testobject_device: Muffin.get(profile.browser)
+              deviceName: Muffin.get(profile.browser)
             };
 
             if (settings.config.appID) {
               desiredCapabilities.testobject_app_id = settings.config.appID;
+            }
+
+            if (profile.appium && profile.appium.platformName) {
+              desiredCapabilities.platformName = profile.appium.platformName;
+            }
+
+            if (profile.appium && profile.appium.platformVersion) {
+              desiredCapabilities.platformVersion = profile.appium.platformVersion;
             }
 
             const p = {

@@ -30,14 +30,12 @@ describe("Configuration", () => {
 
     describe("executor enabled", () => {
       let argvMock = {
-        to_devices: "Samsung_Galaxy_S7_real",
-        to_device: "Samsung_Galaxy_S7_real"
+        to_devices: "Samsung_Galaxy_S7_real"
       };
 
       it("succeed", () => {
         let argvMock = {
           to_devices: "Samsung_Galaxy_S7_real",
-          to_device: "Samsung_Galaxy_S7_real",
           to_app_id: "40"
         };
         let envMock = {
@@ -54,7 +52,6 @@ describe("Configuration", () => {
 
       it("set via cmd line args", () => {
         let argvMock = {
-          to_devices: "Samsung_Galaxy_S7_real",
           to_device: "Samsung_Galaxy_S7_real",
           to_app_id: "40",
           to_api_key: "FAKE_ACCESSKEY",
@@ -94,6 +91,43 @@ describe("Configuration", () => {
           assert(false, "TestObject shouldn't pass verification.");
         } catch (e) {
           expect(e.message).to.equal("Missing configuration for TestObject connection.");
+        }
+      });
+
+      it("co-existence of --to_device and --to_devices", () => {
+        let argvMock = {
+          to_devices: "Samsung_Galaxy_S7_real",
+          to_device: "Samsung_Galaxy_S7_real"
+        };
+        let envMock = {
+          TESTOBJECT_USERNAME: "FAKE_USERNAME",
+          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY"
+        };
+
+        try {
+          configuration.validateConfig({}, argvMock, envMock);
+          assert(false, "TestObject shouldn't pass verification.");
+        } catch (e) {
+          expect(e.message).to.equal("--to_devices and --to_device cannot co-exist in the arguments");
+        }
+      });
+
+      it("co-existence of --to_device and --to_platform_name", () => {
+        let argvMock = {
+          to_devices: "Samsung_Galaxy_S7_real",
+          to_platform_name: "Android",
+        };
+        let envMock = {
+          TESTOBJECT_USERNAME: "FAKE_USERNAME",
+          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY"
+        };
+
+        try {
+          configuration.validateConfig({}, argvMock, envMock);
+          assert(false, "TestObject shouldn't pass verification.");
+        } catch (e) {
+          expect(e.message).to.equal("--to_devices and --to_platform_name or --to_platform_name "
+            + "cannot co-exist in the arguments");
         }
       });
     });
