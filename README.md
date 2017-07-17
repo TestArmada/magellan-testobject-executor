@@ -35,9 +35,45 @@ Please follow the steps
    --to_devices=d1,d2,..                String represents multiple devices which TestObject supports
    --to_list_devices                    List the available devices TestObject supports.
    --to_app_id=1                        APP id of the uploaded app to TestObject
+   --to_platform_name=iOS               String represents the mobile platform
+   --to_platform_version=10.2           String represents the mobile platform version
  ```
 
 Congratulations, you're all set. 
+
+## Run your test in parallel
+TestObject takes both generic device desiredCapability with device and platform information and specific device id. A specific device id is a string that TestObject uses as an unique identifier to represent a particular device. There are two ways to get device id
+
+1. via TestObject's website
+2. via executor's `--to_list_devices`
+
+However explicitly telling executor to run tests in a specific device isn't a good idea for your parallel tests. What TestObject recommends is to use generic device desiredCapability to declare what platform and device you prefer tests to run, and TestObject will run them in parallel as best as it can depending on your device's availability. To set generic device desiredCapabilities, follow these steps so that this executor can compose the proper desiredCapabilities.
+
+1. use `--to_platform_name`, `--to_platform_version` and/or `--to_device`.
+2. set device name info like `"Samsung Galaxy S7"` to `--to_device`, instead of specific device id `"Samsung_Galaxy_S7_wm1"`.
+
+Example to set generic device desiredCapabilities
+
+```bash
+--to_platform_name Android --to_platform_version 7 --to_device "Samsung Galaxy S8"
+```
+
+or
+
+```js
+// in your magellan.json
+{
+    "browser": "Samsung Galaxy S8",
+    "executor": "testobject",
+    "appium": {
+        "appiumVersion": "1.6.5",
+        "platformName": "Android",
+        "platformVersion": "7"
+    }
+}
+
+```
+
 
 # NOTICE
 
