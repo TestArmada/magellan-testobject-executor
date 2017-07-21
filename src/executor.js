@@ -72,6 +72,11 @@ export default {
           }
         };
 
+        if (settings.config.testobjectOutboundProxy) {
+          options.proxy = settings.config.testobjectOutboundProxy;
+          options.strictSSL = false;
+        }
+
         logger.debug(`Request: ${JSON.stringify(options)}`);
 
         return request(options, (err, response, b) => {

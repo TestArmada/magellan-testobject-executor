@@ -41,6 +41,13 @@ export default {
       settings.config.accessUser = runArgv.to_username;
     }
 
+    // optional: *Outbound* HTTP Testobject-specific proxy configuration. Note
+    // that this is for Selenium outbound control traffic only, not the
+    // return path.
+    if (env.TESTOBJECT_OUTBOUND_PROXY) {
+      settings.config.testobjectOutboundProxy = env.TESTOBJECT_OUTBOUND_PROXY;
+    }
+
     settings.config.appID = runArgv.to_app_id;
 
     const parameterWarnings = {

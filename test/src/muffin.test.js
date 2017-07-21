@@ -1,4 +1,5 @@
 import muffin from "../../lib/muffin";
+import settings from "../../lib/settings";
 import chai from "chai";
 import chaiAsPromise from "chai-as-promised";
 import _ from "lodash";
@@ -10,6 +11,9 @@ const assert = chai.assert;
 
 describe("Muffin", function () {
   this.timeout(60000);
+  afterEach(() => {
+    settings.config.testobjectOutboundProxy = null;
+  });
 
   describe("initialize", () => {
     it("force no cache", () => {

@@ -1,4 +1,5 @@
 import configuration from "../../lib/configuration";
+import settings from "../../lib/settings";
 import chai from "chai";
 import chaiAsPromise from "chai-as-promised";
 import _ from "lodash";
@@ -9,6 +10,10 @@ const expect = chai.expect;
 const assert = chai.assert;
 
 describe("Configuration", () => {
+  afterEach(() => {
+    settings.config.testobjectOutboundProxy = null;
+  });
+
   it("getConfig", () => {
     const config = configuration.getConfig();
 
@@ -40,13 +45,15 @@ describe("Configuration", () => {
         };
         let envMock = {
           TESTOBJECT_USERNAME: "FAKE_USERNAME",
-          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY"
+          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY",
+          TESTOBJECT_OUTBOUND_PROXY: "FAKE_PROXY"
         };
 
         const config = configuration.validateConfig({}, argvMock, envMock);
 
         expect(config.accessAPI).to.equal("FAKE_ACCESSKEY");
         expect(config.accessUser).to.equal("FAKE_USERNAME");
+        expect(config.testobjectOutboundProxy).to.equal("FAKE_PROXY");
         expect(config.appID).to.equal("40");
       });
 

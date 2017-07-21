@@ -5,7 +5,7 @@ import clc from "cli-color";
 import logger from "testarmada-logger";
 import configuration from "./configuration";
 
-const TESTOBJECT_API_URL = "https://app.testobject.com/api/rest/v1/devices/all";
+const TESTOBJECT_API_URL = "https://app.testobject.com/api/rest/devices/v1/devices";
 let deviceCache = {};
 
 
@@ -31,6 +31,11 @@ export default {
             "sendImmediately": false
           }
         };
+
+        if (config.testobjectOutboundProxy) {
+          options.proxy = config.testobjectOutboundProxy;
+          options.strictSSL = false;
+        }
 
         request.get(TESTOBJECT_API_URL, options, (err, response, body) => {
           if (err) {

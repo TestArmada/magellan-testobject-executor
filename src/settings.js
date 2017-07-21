@@ -6,7 +6,8 @@ const API_DELAY = 20000;
 const config = {
   accessUser: null,
   accessAPI: null,
-  appID: null
+  appID: null,
+  testobjectOutboundProxy: null
 };
 
 export default {

@@ -28,6 +28,12 @@ Please follow the steps
  export TESTOBJECT_API_KEY=${ACCESS_KEY}
  ```
 
+Optional env variable. If set, all traffic to TestObject, including TestObject api and selenium calls, will be going through it.
+```
+export TESTOBJECT_OUTBOUND_PROXY=http://${your.proxy}:${your.port}
+```
+
+
  4. `./node_modules/.bin/magellan --help` to see if you can see the following content printed out
  ```
   Executor-specific (testarmada-magellan-testobject-executor)

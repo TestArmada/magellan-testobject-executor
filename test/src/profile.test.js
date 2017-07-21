@@ -1,5 +1,6 @@
 import profile from "../../lib/profile";
 import configuration from "../../lib/configuration";
+import settings from "../../lib/settings";
 import chai from "chai";
 import chaiAsPromise from "chai-as-promised";
 import _ from "lodash";
@@ -11,6 +12,10 @@ const assert = chai.assert;
 
 describe("Profile", function () {
   this.timeout(60000);
+
+  afterEach(() => {
+    settings.config.testobjectOutboundProxy = null;
+  });
 
   describe("getProfiles", () => {
 
@@ -109,6 +114,8 @@ describe("Profile", function () {
   });
 
   describe("getNightwatchConfig", () => {
+    settings.config.testobjectOutboundProxy = "FAKE_PROXY";
+    
     const config = profile.getNightwatchConfig({
       desiredCapabilities: {
         "deviceName": "Asus_Google_Nexus_7_real",
@@ -118,5 +125,6 @@ describe("Profile", function () {
 
     expect(config.desiredCapabilities.deviceName).to.equal("Asus_Google_Nexus_7_real");
     expect(config.desiredCapabilities.testobject_api_key).to.equal("FAKE_KEY");
+    expect(config.proxy).to.equal("FAKE_PROXY");
   });
 });

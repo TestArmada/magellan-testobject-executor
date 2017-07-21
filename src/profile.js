@@ -15,6 +15,14 @@ export default {
       desiredCapabilities: profile.desiredCapabilities
     };
 
+    // For *outbound Selenium control traffic*, Nightwatch supports a proxy
+    // property directly on the environment configuration object (note: this is
+    // NOT to be confused with proxy settings in desiredCapabilities, which are
+    // used for return path traffic from the remote browser).
+    if (settings.config.testobjectOutboundProxy) {
+      config.proxy = settings.config.testobjectOutboundProxy;
+    }
+
     logger.debug(`executor config: ${JSON.stringify(config)}`);
     return config;
   },
