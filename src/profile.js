@@ -43,7 +43,7 @@ export default {
           if (runArgv.to_device) {
             const p = {
               desiredCapabilities: {
-                testobject_api_key: settings.config.accessAPI,
+                testobjectApiKey: settings.config.accessAPI,
                 deviceName: Muffin.get(runArgv.to_device)
               },
               executor: "testobject",
@@ -74,7 +74,7 @@ export default {
               const b = device.trim();
               const p = {
                 desiredCapabilities: {
-                  testobject_api_key: settings.config.accessAPI,
+                  testobjectApiKey: settings.config.accessAPI,
                   deviceName: Muffin.get(b)
                 },
                 executor: "testobject",
@@ -112,20 +112,12 @@ export default {
         return new Promise((resolve, reject) => {
           try {
             const desiredCapabilities = {
-              testobject_api_key: settings.config.accessAPI,
+              testobjectApiKey: settings.config.accessAPI,
               deviceName: Muffin.get(profile.browser)
             };
 
             if (settings.config.appID) {
               desiredCapabilities.testobject_app_id = settings.config.appID;
-            }
-
-            if (profile.appium && profile.appium.platformName) {
-              desiredCapabilities.platformName = profile.appium.platformName;
-            }
-
-            if (profile.appium && profile.appium.platformVersion) {
-              desiredCapabilities.platformVersion = profile.appium.platformVersion;
             }
 
             const p = {
@@ -134,6 +126,12 @@ export default {
               nightwatchEnv: profile.executor,
               id: profile.browser
             };
+
+            if (profile.appium) {
+              p.desiredCapabilities = _.merge(p.desiredCapabilities, profile.appium);
+            }
+
+            logger.debug(`detected profile: ${JSON.stringify(p)}`);
 
             resolve(p);
           } catch (e) {

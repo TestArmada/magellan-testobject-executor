@@ -33,7 +33,7 @@ describe("Profile", function () {
         .getProfiles({}, argvMock)
         .then((profile) => {
           expect(profile.desiredCapabilities.deviceName).to.equal("Samsung_Galaxy_S7_real");
-          expect(profile.desiredCapabilities.testobject_api_key).to.equal(process.env.TESTOBJECT_API_KEY);
+          expect(profile.desiredCapabilities.testobjectApiKey).to.equal(process.env.TESTOBJECT_API_KEY);
           expect(profile.desiredCapabilities.testobject_app_id).to.equal("1");
           expect(profile.executor).to.equal("testobject");
           expect(profile.nightwatchEnv).to.equal("testobject");
@@ -51,14 +51,15 @@ describe("Profile", function () {
       return profile
         .getProfiles({}, argvMock)
         .then((profiles) => {
+          console.log(profiles[0])
           expect(profiles.length).to.equal(2);
           expect(profiles[0].desiredCapabilities.deviceName).to.equal("Samsung_Galaxy_S7_real");
-          expect(profiles[0].desiredCapabilities.testobject_api_key).to.equal(process.env.TESTOBJECT_API_KEY);
+          expect(profiles[0].desiredCapabilities.testobjectApiKey).to.equal(process.env.TESTOBJECT_API_KEY);
           expect(profiles[0].executor).to.equal("testobject");
           expect(profiles[0].nightwatchEnv).to.equal("testobject");
           expect(profiles[0].id).to.equal("Samsung_Galaxy_S7_real");
           expect(profiles[1].desiredCapabilities.deviceName).to.equal("Asus_Google_Nexus_7_real");
-          expect(profiles[1].desiredCapabilities.testobject_api_key).to.equal(process.env.TESTOBJECT_API_KEY);
+          expect(profiles[1].desiredCapabilities.testobjectApiKey).to.equal(process.env.TESTOBJECT_API_KEY);
           expect(profiles[1].executor).to.equal("testobject");
           expect(profiles[1].nightwatchEnv).to.equal("testobject");
           expect(profiles[1].id).to.equal("Asus_Google_Nexus_7_real");
@@ -95,7 +96,7 @@ describe("Profile", function () {
           expect(profile.desiredCapabilities.deviceName).to.equal("Asus_Google_Nexus_7_real");
           expect(profile.desiredCapabilities.platformName).to.equal("Android");
           expect(profile.desiredCapabilities.platformVersion).to.equal("7.0");
-          expect(profile.desiredCapabilities.testobject_api_key).to.equal(process.env.TESTOBJECT_API_KEY);
+          expect(profile.desiredCapabilities.testobjectApiKey).to.equal(process.env.TESTOBJECT_API_KEY);
           expect(profile.executor).to.equal("testobject");
           expect(profile.nightwatchEnv).to.equal("testobject");
           expect(profile.id).to.equal("Asus_Google_Nexus_7_real");
@@ -119,12 +120,12 @@ describe("Profile", function () {
     const config = profile.getNightwatchConfig({
       desiredCapabilities: {
         "deviceName": "Asus_Google_Nexus_7_real",
-        "testobject_api_key": "FAKE_KEY"
+        "testobjectApiKey": "FAKE_KEY"
       }
     });
 
     expect(config.desiredCapabilities.deviceName).to.equal("Asus_Google_Nexus_7_real");
-    expect(config.desiredCapabilities.testobject_api_key).to.equal("FAKE_KEY");
+    expect(config.desiredCapabilities.testobjectApiKey).to.equal("FAKE_KEY");
     expect(config.proxy).to.equal("FAKE_PROXY");
   });
 });
