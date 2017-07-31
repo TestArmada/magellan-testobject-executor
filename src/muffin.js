@@ -5,7 +5,7 @@ import clc from "cli-color";
 import logger from "testarmada-logger";
 import configuration from "./configuration";
 
-const TESTOBJECT_API_URL = "https://app.testobject.com/api/rest/devices/v1/devices";
+const TESTOBJECT_API_URL = "https://app.testobject.com/api/rest/v2/devices";
 let deviceCache = {};
 
 
@@ -68,7 +68,8 @@ export default {
 
       const families = _.groupBy(deviceCache, (details) => details.os);
       const table = new Table({
-        head: ["Family", "ID", "Manufacturer", "OS", "OS Version", "API Level", "Screen Size"]
+        head: ["Family", "ID", "Data Center", "Manufacturer", "OS",
+          "OS Version", "API Level", "Screen Size"]
       });
 
       let count = 1;
@@ -82,6 +83,7 @@ export default {
           table.push([
             clc.blackBright(`${count}.`),
             details.id,
+            details.ds,
             _.upperCase(details.manufacturer),
             _.upperCase(details.os),
             details.osVersion ? details.osVersion : "N/A",
@@ -101,8 +103,11 @@ export default {
   _buildDeviceCache(testobjectResponse) {
     deviceCache = {};
 
-    _.forEach(testobjectResponse, (details) => {
-      deviceCache[details.id] = details;
+    _.forEach(testobjectResponse, (devices, ds) => {
+      _.forEach(testobjectResponse[ds], (details) => {
+        deviceCache[details.id] = details;
+        deviceCache[details.id].ds = ds;
+      });
     });
 
   }
