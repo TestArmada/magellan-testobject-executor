@@ -22,7 +22,7 @@ export default class Tunnel {
         return reject("Sauce tunnel support is missing configuration: Sauce username.");
       }
 
-      if (!this.options.tunnel.password) {
+      if (!this.options.tunnel.accessKey) {
         return reject("Sauce tunnel support is missing configuration: Sauce password.");
       }
 
@@ -62,7 +62,9 @@ export default class Tunnel {
           verbose: settings.debug,
           verboseDebugging: settings.debug,
           logfile: logFilePath,
-          port: settings.BASE_SELENIUM_PORT_OFFSET
+          port: settings.BASE_SELENIUM_PORT_OFFSET,
+          // for sauce tunnel beta program
+          noSslBumpDomains: 'all'
         });
 
         logger.debug(`calling sauceConnectLauncher() w/ ${JSON.stringify(sauceOptions)}`);

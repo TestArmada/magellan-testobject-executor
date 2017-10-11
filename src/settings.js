@@ -16,7 +16,7 @@ const config = {
 
   tunnel: {
     username: null,
-    password: null,
+    accessKey: null,
     restUrl: null,
 
     // optional
