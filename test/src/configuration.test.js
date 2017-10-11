@@ -137,6 +137,104 @@ describe("Configuration", () => {
             + "cannot co-exist in the arguments");
         }
       });
+
+
+      it("--to_tunnel_id is set", () => {
+        let argvMock = {
+          to_devices: "Samsung_Galaxy_S7_real",
+          to_tunnel_id: "FAKE_TUNNEL_ID"
+        };
+        let envMock = {
+          TESTOBJECT_USERNAME: "FAKE_USERNAME",
+          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY"
+        };
+
+        const config = configuration.validateConfig({}, argvMock, envMock);
+
+        expect(config.accessAPI).to.equal("FAKE_ACCESSKEY");
+        expect(config.accessUser).to.equal("FAKE_USERNAME");
+        expect(config.useTunnels).to.equal(false);
+        expect(config.tunnel.tunnelIdentifier).to.equal("FAKE_TUNNEL_ID");
+        expect(config.tunnel.restUrl).to.not.equal(null);
+      });
+
+      it("--to_create_tunnel is set", () => {
+        let argvMock = {
+          to_devices: "Samsung_Galaxy_S7_real",
+          to_create_tunnel: true
+        };
+        let envMock = {
+          TESTOBJECT_USERNAME: "FAKE_USERNAME",
+          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY",
+          TESTOBJECT_PASSWORD: "FAKE_PASSWORD"
+        };
+
+        const config = configuration.validateConfig({}, argvMock, envMock);
+
+        expect(config.accessAPI).to.equal("FAKE_ACCESSKEY");
+        expect(config.accessUser).to.equal("FAKE_USERNAME");
+        expect(config.tunnel.username).to.equal("FAKE_USERNAME");
+        expect(config.tunnel.password).to.equal("FAKE_PASSWORD");
+        expect(config.useTunnels).to.equal(true);
+        expect(config.tunnel.tunnelIdentifier).to.not.equal(null);
+        expect(config.tunnel.restUrl).to.not.equal(null);
+      });
+
+
+      it("--to_create_tunnel is set without TESTOBJECT_PASSWORD", () => {
+        let argvMock = {
+          to_devices: "Samsung_Galaxy_S7_real",
+          to_create_tunnel: true,
+          to_password: "FAKE_PASSWORD"
+        };
+        let envMock = {
+          TESTOBJECT_USERNAME: "FAKE_USERNAME",
+          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY"
+        };
+
+        const config = configuration.validateConfig({}, argvMock, envMock);
+
+        expect(config.accessAPI).to.equal("FAKE_ACCESSKEY");
+        expect(config.accessUser).to.equal("FAKE_USERNAME");
+        expect(config.tunnel.username).to.equal("FAKE_USERNAME");
+        expect(config.tunnel.password).to.equal("FAKE_PASSWORD");
+        expect(config.useTunnels).to.equal(true);
+        expect(config.tunnel.tunnelIdentifier).to.not.equal(null);
+        expect(config.tunnel.restUrl).to.not.equal(null);
+      });
+
+      it("co-existence of --to_tunnel_id and --to_create_tunnel", () => {
+        let argvMock = {
+          to_devices: "Samsung_Galaxy_S7_real",
+          to_tunnel_id: "FAKE_TUNNEL_ID",
+          to_create_tunnel: true
+        };
+        let envMock = {
+          TESTOBJECT_USERNAME: "FAKE_USERNAME",
+          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY",
+          TESTOBJECT_PASSWORD: "FAKE_PASSWORD"
+        };
+
+        const config = configuration.validateConfig({}, argvMock, envMock);
+      });
+
+      it("--to_create_tunnel without TESTOBJECT_PASSWORD", () => {
+        let argvMock = {
+          to_devices: "Samsung_Galaxy_S7_real",
+          to_create_tunnel: true
+        };
+        let envMock = {
+          TESTOBJECT_USERNAME: "FAKE_USERNAME",
+          TESTOBJECT_API_KEY: "FAKE_ACCESSKEY"
+        };
+
+        try {
+          configuration.validateConfig({}, argvMock, envMock);
+          assert(false, "TestObject shouldn't pass verification.");
+        } catch (e) {
+          expect(e.message).to.equal("Missing configuration for TestObject connection.");
+        }
+      });
     });
   });
 });

@@ -23,6 +23,11 @@ export default {
       config.proxy = settings.config.testobjectOutboundProxy;
     }
 
+    if (settings.config.tunnel.tunnelIdentifier) {
+      // we're told to use tunnel
+      config.desiredCapabilities.tunnelIdentifier = settings.config.tunnel.tunnelIdentifier;
+    }
+
     logger.debug(`executor config: ${JSON.stringify(config)}`);
     return config;
   },

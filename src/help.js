@@ -28,6 +28,22 @@ export default {
     "example": "mikebrown",
     "description": "Your TestObject username"
   },
+  "to_password": {
+    "visible": false,
+    "type": "string",
+    "example": "sd9f81l",
+    "description": "Your TestObject password, for creating tunnel"
+  },
+  "to_create_tunnel": {
+    "visible": true,
+    "type": "boolean",
+    "description": "Create and use sauce tunnel for testing"
+  },
+  "to_tunnel_id": {
+    "visible": true,
+    "type": "string",
+    "description": "Existing tunnel identifier for testing"
+  },
   "to_app_id": {
     "visible": true,
     "type": "string",
