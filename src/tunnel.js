@@ -64,7 +64,7 @@ export default class Tunnel {
           logfile: logFilePath,
           port: settings.BASE_SELENIUM_PORT_OFFSET,
           // for sauce tunnel beta program
-          noSslBumpDomains: 'all'
+          noSslBumpDomains: "all"
         });
 
         logger.debug(`calling sauceConnectLauncher() w/ ${JSON.stringify(sauceOptions)}`);
