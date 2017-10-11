@@ -14,7 +14,7 @@ describe("Tunnel", () => {
   let options = {
     tunnel: {
       username: "FAKE_USERNAME",
-      password: "FAKE_PASSWORD",
+      accessKey: "FAKE_PASSWORD",
       tunnelIdentifier: "FAKE_TUNNELID"
     }
   };
@@ -31,7 +31,7 @@ describe("Tunnel", () => {
 
   it("constructor", () => {
     expect(tunnel.options.tunnel.username).to.equal("FAKE_USERNAME");
-    expect(tunnel.options.tunnel.password).to.equal("FAKE_PASSWORD");
+    expect(tunnel.options.tunnel.accessKey).to.equal("FAKE_PASSWORD");
     expect(tunnel.options.tunnel.tunnelIdentifier).to.equal("FAKE_TUNNELID");
   });
 

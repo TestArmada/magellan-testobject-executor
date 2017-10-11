@@ -174,7 +174,7 @@ describe("Configuration", () => {
         expect(config.accessAPI).to.equal("FAKE_ACCESSKEY");
         expect(config.accessUser).to.equal("FAKE_USERNAME");
         expect(config.tunnel.username).to.equal("FAKE_USERNAME");
-        expect(config.tunnel.password).to.equal("FAKE_PASSWORD");
+        expect(config.tunnel.accessKey).to.equal("FAKE_PASSWORD");
         expect(config.useTunnels).to.equal(true);
         expect(config.tunnel.tunnelIdentifier).to.not.equal(null);
         expect(config.tunnel.restUrl).to.not.equal(null);
@@ -197,7 +197,7 @@ describe("Configuration", () => {
         expect(config.accessAPI).to.equal("FAKE_ACCESSKEY");
         expect(config.accessUser).to.equal("FAKE_USERNAME");
         expect(config.tunnel.username).to.equal("FAKE_USERNAME");
-        expect(config.tunnel.password).to.equal("FAKE_PASSWORD");
+        expect(config.tunnel.accessKey).to.equal("FAKE_PASSWORD");
         expect(config.useTunnels).to.equal(true);
         expect(config.tunnel.tunnelIdentifier).to.not.equal(null);
         expect(config.tunnel.restUrl).to.not.equal(null);
