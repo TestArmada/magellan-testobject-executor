@@ -3,6 +3,12 @@ import _ from "lodash";
 import logger from "testarmada-logger";
 import settings from "./settings";
 
+const TESTOBJECT_REST_URL = "https://us1.api.testobject.com/sc/rest/v1";
+const RAND_MAX = 9999999999999999;
+const STRNUM_BASE = 16;
+
+const guid = () => Math.round(Math.random() * RAND_MAX).toString(STRNUM_BASE);
+
 export default {
   getConfig: () => {
     logger.prefix = "TestObject Executor";
@@ -48,6 +54,27 @@ export default {
       settings.config.testobjectOutboundProxy = env.TESTOBJECT_OUTBOUND_PROXY;
     }
 
+    if (runArgv.to_create_tunnel) {
+      // if to_create_tunnel is in use
+      // required
+      settings.config.tunnel.username = settings.config.accessUser;
+
+      settings.config.tunnel.accessKey = env.TESTOBJECT_PASSWORD;
+      // optional
+      if (runArgv.to_password && !settings.config.tunnel.accessKey) {
+        // only accept argument from command line if env variable isn't set
+        settings.config.tunnel.accessKey = runArgv.to_password;
+      }
+
+      settings.config.tunnel.tunnelIdentifier = guid();
+      settings.config.tunnel.restUrl = TESTOBJECT_REST_URL;
+      settings.config.useTunnels = true;
+    } else if (runArgv.to_tunnel_id) {
+      // if tunnel id is passed in
+      settings.config.tunnel.tunnelIdentifier = runArgv.to_tunnel_id;
+      settings.config.tunnel.restUrl = TESTOBJECT_REST_URL;
+    }
+
     settings.config.appID = runArgv.to_app_id;
 
     const parameterWarnings = {
@@ -72,11 +99,11 @@ export default {
       _.forEach(parameterWarnings, (v, k) => {
         if (!settings.config[k]) {
           if (v.required) {
-            logger.err(`Error! TestObject requires ${k} to be set. Check if the`
+            logger.err(`TestObject requires ${k} to be set. Check if the`
               + ` environment variable $${v.envKey} is defined.`);
             valid = false;
           } else {
-            logger.warn(`Warning! No ${k} is set. This is set via the`
+            logger.warn(`No ${k} is set. This is set via the`
               + ` environment variable $${v.envKey} . This isn't required, but can cause `
               + "problems with TestObject if not set");
           }
@@ -97,6 +124,21 @@ export default {
         (runArgv.to_platform_name || runArgv.to_platform_version)) {
         throw new Error("--to_devices and --to_platform_name or --to_platform_name "
           + "cannot co-exist in the arguments");
+      }
+
+      // validate tunnel configs
+      if (runArgv.to_create_tunnel) {
+        if (!settings.config.tunnel.accessKey) {
+          logger.err(`TestObject requires TESTOBJECT_PASSWORD to be set. Check if the`
+            + ` environment variable TESTOBJECT_PASSWORD is defined.`);
+
+          throw new Error("Missing configuration for TestObject connection.");
+        }
+
+        if (runArgv.to_tunnel_id) {
+          logger.warn("--to_create_tunnel and --to_tunnel_id shouldn't be used together." +
+            " TestObject excutor will ignore --to_tunnel_id in this case.");
+        }
       }
 
       logger.debug("TestObject configuration: ");

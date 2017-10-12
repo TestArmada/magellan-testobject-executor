@@ -15,6 +15,7 @@ describe("Profile", function () {
 
   afterEach(() => {
     settings.config.testobjectOutboundProxy = null;
+    settings.config.tunnel.tunnelIdentifier = null;
   });
 
   describe("getProfiles", () => {
@@ -51,7 +52,6 @@ describe("Profile", function () {
       return profile
         .getProfiles({}, argvMock)
         .then((profiles) => {
-          console.log(profiles[0])
           expect(profiles.length).to.equal(2);
           expect(profiles[0].desiredCapabilities.deviceName).to.equal("Samsung_Galaxy_S7_real");
           expect(profiles[0].desiredCapabilities.testobjectApiKey).to.equal(process.env.TESTOBJECT_API_KEY);
@@ -116,16 +116,18 @@ describe("Profile", function () {
 
   describe("getNightwatchConfig", () => {
     settings.config.testobjectOutboundProxy = "FAKE_PROXY";
+    settings.config.tunnel.tunnelIdentifier = "FAKE_TUNNLE_ID";
     
     const config = profile.getNightwatchConfig({
       desiredCapabilities: {
         "deviceName": "Asus_Google_Nexus_7_real",
-        "testobjectApiKey": "FAKE_KEY"
+        "testobjectApiKey": "FAKE_KEY",
       }
     });
 
     expect(config.desiredCapabilities.deviceName).to.equal("Asus_Google_Nexus_7_real");
     expect(config.desiredCapabilities.testobjectApiKey).to.equal("FAKE_KEY");
+    expect(config.desiredCapabilities.tunnelIdentifier).to.equal("FAKE_TUNNLE_ID");
     expect(config.proxy).to.equal("FAKE_PROXY");
   });
 });

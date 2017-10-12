@@ -3,20 +3,85 @@ import request from "request";
 import logger from "testarmada-logger";
 
 import settings from "./settings";
+import Tunnel from "./tunnel";
 
-export default {
+let config = settings.config;
+
+let tunnel = null;
+
+const Executor = {
   /*eslint-disable no-unused-vars*/
   setupRunner: (mocks = null) => {
-    return new Promise((resolve) => {
-      resolve();
-    });
+    return Executor
+      .setupTunnels(mocks);
+  },
+
+  setupTunnels: (mocks = null) => {
+    logger.prefix = "TestObject Executor";
+
+    let ITunnel = Tunnel;
+
+    if (mocks) {
+      if (mocks.Tunnel) {
+        ITunnel = mocks.Tunnel;
+      }
+      if (mocks.config) {
+        config = mocks.config;
+      }
+    }
+
+    if (config.useTunnels) {
+      // create new tunnel if needed
+      tunnel = new ITunnel(config);
+
+      return tunnel
+        .initialize()
+        .then(() => {
+          return tunnel.open();
+        })
+        .then(() => {
+          logger.log("Sauce tunnel is opened!  Continuing...");
+          logger.log(`Assigned tunnel [${config.tunnel.tunnelIdentifier}] to all workers`);
+        })
+        .catch((err) => {
+          return new Promise((resolve, reject) => {
+            reject(err);
+          });
+        });
+    } else {
+      return new Promise((resolve) => {
+        if (config.tunnel.tunnelIdentifier) {
+          const tunnelAnnouncement = config.tunnel.tunnelIdentifier;
+
+          logger.log(`Connected to sauce tunnel [${tunnelAnnouncement}]`);
+        } else {
+          logger.log("Connected to TestObject without tunnel");
+        }
+        return resolve();
+      });
+    }
   },
 
   /*eslint-disable no-unused-vars*/
   teardownRunner: (mocks = null) => {
-    return new Promise((resolve) => {
-      resolve();
-    });
+    logger.prefix = "TestObject Executor";
+
+    if (mocks && mocks.config) {
+      config = mocks.config;
+    }
+
+    // close tunnel if needed
+    if (tunnel && config.useTunnels) {
+      return tunnel
+        .close()
+        .then(() => {
+          logger.log("Sauce tunnel is closed!  Continuing...");
+        });
+    } else {
+      return new Promise((resolve) => {
+        resolve();
+      });
+    }
   },
 
   setupTest: (callback) => {
@@ -98,3 +163,5 @@ export default {
   }
 
 };
+
+module.exports = Executor;
