@@ -166,7 +166,7 @@ describe("Configuration", () => {
         let envMock = {
           TESTOBJECT_USERNAME: "FAKE_USERNAME",
           TESTOBJECT_API_KEY: "FAKE_ACCESSKEY",
-          TESTOBJECT_PASSWORD: "FAKE_PASSWORD"
+          TESTOBJECT_TUNNEL_API_KEY: "FAKE_PASSWORD"
         };
 
         const config = configuration.validateConfig({}, argvMock, envMock);
@@ -181,11 +181,11 @@ describe("Configuration", () => {
       });
 
 
-      it("--to_create_tunnel is set without TESTOBJECT_PASSWORD", () => {
+      it("--to_create_tunnel is set without TESTOBJECT_TUNNEL_API_KEY", () => {
         let argvMock = {
           to_devices: "Samsung_Galaxy_S7_real",
           to_create_tunnel: true,
-          to_password: "FAKE_PASSWORD"
+          to_tunnel_api_key: "FAKE_PASSWORD"
         };
         let envMock = {
           TESTOBJECT_USERNAME: "FAKE_USERNAME",
@@ -212,13 +212,13 @@ describe("Configuration", () => {
         let envMock = {
           TESTOBJECT_USERNAME: "FAKE_USERNAME",
           TESTOBJECT_API_KEY: "FAKE_ACCESSKEY",
-          TESTOBJECT_PASSWORD: "FAKE_PASSWORD"
+          TESTOBJECT_TUNNEL_API_KEY: "FAKE_PASSWORD"
         };
 
         const config = configuration.validateConfig({}, argvMock, envMock);
       });
 
-      it("--to_create_tunnel without TESTOBJECT_PASSWORD", () => {
+      it("--to_create_tunnel without TESTOBJECT_TUNNEL_API_KEY", () => {
         let argvMock = {
           to_devices: "Samsung_Galaxy_S7_real",
           to_create_tunnel: true
