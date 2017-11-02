@@ -32,7 +32,7 @@ Please follow the steps
 
 If you want to use this executor to launch sauce tunnel for you, set this env variable.
 ```bash
-export TESTOBJECT_PASSWORD=${PASSWORD}
+export TESTOBJECT_TUNNEL_API_KEY=${SAUCE_CONNECT_ACCESS_KEY}
 ``` 
 
 Optional env variable. If set, all traffic to TestObject, including TestObject api and selenium calls, will be going through it.
@@ -60,7 +60,7 @@ TestObject recently launched the beta program to run real device test with sauce
 
 1. launch sauce tunnel automatically
 
-Simply set `TESTOBJECT_PASSWORD` env variable and add `--to_create_tunnel` to your command line. This executor will create a tunnel for you per magellan run, and automatically close it eventually.
+Simply set `TESTOBJECT_TUNNEL_API_KEY` env variable and add `--to_create_tunnel` to your command line. This executor will create a tunnel for you per magellan run, and automatically close it eventually.
 
 2. use an existing sauce tunnel
 

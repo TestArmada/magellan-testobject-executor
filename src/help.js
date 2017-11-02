@@ -16,6 +16,12 @@ export default {
     "type": "function",
     "description": "List the available devices TestObject supports."
   },
+  "to_tunnel_api_key": {
+    "visible": false,
+    "type": "string",
+    "example": "aasdfsfsfd89123uohasd89",
+    "description": "API key string for sauce tunnel"
+  },
   "to_api_key": {
     "visible": false,
     "type": "string",
@@ -27,12 +33,6 @@ export default {
     "type": "string",
     "example": "mikebrown",
     "description": "Your TestObject username"
-  },
-  "to_password": {
-    "visible": false,
-    "type": "string",
-    "example": "sd9f81l",
-    "description": "Your TestObject password, for creating tunnel"
   },
   "to_create_tunnel": {
     "visible": true,
