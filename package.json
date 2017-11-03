@@ -1,6 +1,6 @@
 {
   "name": "testarmada-magellan-testobject-executor",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "magellan executor for testobject",
   "main": "index.js",
   "scripts": {
