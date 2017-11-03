@@ -1,6 +1,7 @@
 import { argv } from "yargs";
 import _ from "lodash";
 import logger from "testarmada-logger";
+import path from "path";
 import settings from "./settings";
 
 const TESTOBJECT_REST_URL = "https://us1.api.testobject.com/sc/rest/v1";
@@ -8,6 +9,24 @@ const RAND_MAX = 9999999999999999;
 const STRNUM_BASE = 16;
 
 const guid = () => Math.round(Math.random() * RAND_MAX).toString(STRNUM_BASE);
+
+const _loadConfig = (filename) => {
+  logger.prefix = "TestObject Executor";
+  const filepath = path.resolve(process.cwd() + path.sep + filename);
+
+  try {
+    /*eslint-disable global-require*/
+    const config = require(filepath);
+    logger.log(`Loaded config file ${filename}`);
+    logger.debug(`Loading config from ${filename}:`);
+    logger.debug(`${JSON.stringify(config)}`);
+    return _.cloneDeep(config);
+  } catch (err) {
+    logger.err(`Cannot load config file from ${filename}`);
+    logger.err(err);
+    throw new Error(err);
+  }
+};
 
 export default {
   getConfig: () => {
@@ -47,6 +66,11 @@ export default {
       settings.config.accessUser = runArgv.to_username;
     }
 
+    // optional:
+    if (runArgv.to_app_capabilities_config) {
+      settings.config.appCapabilitiesConfig = _loadConfig(runArgv.to_app_capabilities_config);
+    }
+
     // optional: *Outbound* HTTP Testobject-specific proxy configuration. Note
     // that this is for Selenium outbound control traffic only, not the
     // return path.
@@ -61,7 +85,7 @@ export default {
 
       settings.config.tunnel.accessKey = env.TESTOBJECT_TUNNEL_API_KEY;
       // optional
-      if (runArgv.to_tunnel_api_key && !settings.config.tunnel.accessKey) {
+      if (runArgv.to_password && !settings.config.tunnel.accessKey) {
         // only accept argument from command line if env variable isn't set
         settings.config.tunnel.accessKey = runArgv.to_tunnel_api_key;
       }
@@ -129,8 +153,8 @@ export default {
       // validate tunnel configs
       if (runArgv.to_create_tunnel) {
         if (!settings.config.tunnel.accessKey) {
-          logger.err(`TestObject requires TESTOBJECT_TUNNEL_API_KEY to be set. Check if the`
-            + ` environment variable TESTOBJECT_TUNNEL_API_KEY is defined.`);
+          logger.err(`TestObject requires TESTOBJECT_PASSWORD to be set. Check if the`
+            + ` environment variable TESTOBJECT_PASSWORD is defined.`);
 
           throw new Error("Missing configuration for TestObject connection.");
         }

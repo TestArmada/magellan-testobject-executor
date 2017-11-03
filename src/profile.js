@@ -5,6 +5,17 @@ import logger from "testarmada-logger";
 import settings from "./settings";
 import Muffin from "./muffin";
 
+const _mergeCapabilities = (capabilities, capsConfig) => {
+  logger.prefix = "TestObject Executor";
+
+  if (capsConfig && capsConfig[capabilities.deviceName]) {
+    capabilities = _.merge(capabilities, capsConfig[capabilities.deviceName]);
+    logger.debug(`DesiredCapabilities after merging appCapabilitiesConfig`
+      + ` for device ${capabilities.deviceName}`);
+    logger.debug(JSON.stringify(capabilities));
+  }
+  return capabilities;
+};
 
 /* eslint-disable camelcase */
 export default {
@@ -88,6 +99,12 @@ export default {
                 id: b
               };
 
+              if (settings.config.appCapabilitiesConfig) {
+                p.desiredCapabilities = _mergeCapabilities(
+                  p.desiredCapabilities,
+                  settings.config.appCapabilitiesConfig);
+              }
+
               if (settings.config.appID) {
                 p.desiredCapabilities.testobject_app_id = settings.config.appID;
               }
@@ -121,10 +138,6 @@ export default {
               deviceName: Muffin.get(profile.browser)
             };
 
-            if (settings.config.appID) {
-              desiredCapabilities.testobject_app_id = settings.config.appID;
-            }
-
             const p = {
               desiredCapabilities,
               executor: profile.executor,
@@ -134,6 +147,16 @@ export default {
 
             if (profile.appium) {
               p.desiredCapabilities = _.merge(p.desiredCapabilities, profile.appium);
+            }
+
+            if (settings.config.appCapabilitiesConfig) {
+              p.desiredCapabilities = _mergeCapabilities(
+                p.desiredCapabilities,
+                settings.config.appCapabilitiesConfig);
+            }
+
+            if (settings.config.appID) {
+              p.desiredCapabilities.testobject_app_id = settings.config.appID;
             }
 
             logger.debug(`detected profile: ${JSON.stringify(p)}`);

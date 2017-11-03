@@ -61,5 +61,12 @@ export default {
     "type": "string",
     "example": "10.2",
     "description": "String represents the mobile platform version"
+  },
+  "to_app_capabilities_config": {
+    "visible": true,
+    "type": "string",
+    "example": "toAppCapabilitiesConfig.json",
+    "description": "Specify a configuration file containing customized appium "
+    + "desiredCapabilities for TestObject"
   }
 };

@@ -22,7 +22,9 @@ const config = {
     // optional
     tunnelIdentifier: null,
     connectVersion: null
-  }
+  },
+
+  appCapabilitiesConfig: null
 };
 
 export default {
