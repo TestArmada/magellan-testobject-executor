@@ -85,7 +85,7 @@ export default {
 
       settings.config.tunnel.accessKey = env.TESTOBJECT_TUNNEL_API_KEY;
       // optional
-      if (runArgv.to_password && !settings.config.tunnel.accessKey) {
+      if (runArgv.to_tunnel_api_key && !settings.config.tunnel.accessKey) {
         // only accept argument from command line if env variable isn't set
         settings.config.tunnel.accessKey = runArgv.to_tunnel_api_key;
       }
@@ -153,8 +153,8 @@ export default {
       // validate tunnel configs
       if (runArgv.to_create_tunnel) {
         if (!settings.config.tunnel.accessKey) {
-          logger.err(`TestObject requires TESTOBJECT_PASSWORD to be set. Check if the`
-            + ` environment variable TESTOBJECT_PASSWORD is defined.`);
+          logger.err(`TestObject requires TESTOBJECT_TUNNEL_API_KEY to be set. Check if the`
+            + ` environment variable TESTOBJECT_TUNNEL_API_KEY is defined.`);
 
           throw new Error("Missing configuration for TestObject connection.");
         }
