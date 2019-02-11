@@ -1,6 +1,6 @@
 {
   "name": "testarmada-magellan-testobject-executor",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "magellan executor for testobject",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,7 @@
     "lint": "./node_modules/.bin/eslint src/**",
     "test": "npm run build && npm run build-test && ./node_modules/.bin/mocha --recursive test/lib",
     "coverage": "./node_modules/.bin/eslint src/** && npm run build && npm run build-test && ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive test/lib",
-    "upload-coverage": "./node_modules/.bin/codecov --root=lib",
-    "postinstall": "npm run build"
+    "upload-coverage": "./node_modules/.bin/codecov --root=lib"
   },
   "dependencies": {
     "cli-color": "^1.1.0",
