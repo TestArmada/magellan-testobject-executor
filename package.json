@@ -1,6 +1,6 @@
 {
   "name": "testarmada-magellan-testobject-executor",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "magellan executor for testobject",
   "main": "index.js",
   "scripts": {
@@ -13,9 +13,6 @@
     "postinstall": "npm run build"
   },
   "dependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-eslint": "^7.1.1",
-    "babel-preset-es2015": "^6.18.0",
     "cli-color": "^1.1.0",
     "cli-table": "^0.3.1",
     "lodash": "^4.17.4",
@@ -25,6 +22,9 @@
     "yargs": "^6.6.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-eslint": "^7.1.1",
+    "babel-preset-es2015": "^6.18.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "codecov": "^1.0.1",
