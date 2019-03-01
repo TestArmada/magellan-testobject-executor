@@ -41,9 +41,13 @@ export default {
           if (err) {
             reject(err);
           }
-
-          self._buildDeviceCache(JSON.parse(body));
-          resolve(deviceCache);
+          logger.debug(`Response: ${JSON.stringify(response)}`);
+          try {
+            self._buildDeviceCache(JSON.parse(body));
+            resolve(deviceCache);
+          } catch (e) {
+            reject(new Error(`StatusCode: ${response.statusCode}, error: ${e}`));
+          }
         });
       }
     });
