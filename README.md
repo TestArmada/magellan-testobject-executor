@@ -89,7 +89,25 @@ Example to set generic device desiredCapabilities
 or
 
 ```js
-// in your magellan.json
+// in your nightwatch.json
+"testobject": {
+  "useSsl": true,
+  "request_timeout_options": {
+    "timeout": 2000000
+  },
+  "selenium_host": "us1.appium.testobject.com",
+  "selenium_port": 443,
+  "desiredCapabilities": {
+    "testobject_appium_version": "1.16.0"
+  },
+  "selenium": {
+    "start_process": false
+  }
+}
+```
+
+```js
+// For Android: in your magellan.json
 {
     "browser": "Samsung Galaxy S8",
     "executor": "testobject",
@@ -99,9 +117,40 @@ or
         "platformVersion": "7"
     }
 }
+```
+
+```js
+// For iOS: in your magellan.json
+{
+ "executor": "testobject",
+ "appium": {
+   "automationName": "xcuitest",
+   "deviceName": "iPhone .*",
+   "platformName": "iOS",
+   "platformVersion": "12.2"
+ }
+}
 
 ```
 
+Example Command:
+```
+//
+SAUCE_API_HOST="us1.api.testobject.com/sc" \
+TESTOBJECT_USERNAME=walmart \
+TESTOBJECT_API_KEY=ffffffffff \
+TESTOBJECT_TUNNEL_API_KEY=aaaaaaaaaa \
+./node_modules/.bin/magellan \
+--config ./test/automation/magellan.json \
+--nightwatch_config ./test/automation/conf/nightwatch.json \
+--serial \
+--profile profile-in-magellan-json \
+--tag ios \
+--max_test_attempts 1 \
+--to_create_tunnel
+```
+
+Reference https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy+and+Real+Device+Testing for details
 
 # NOTICE
 
